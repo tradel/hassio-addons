@@ -1,0 +1,51 @@
+name: "Publish"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    name: Publish ${{ matrix.addon }} add-on for ${{ matrix.arch }}
+    strategy:
+      matrix:
+        addon: ["abode2rtc"]
+        arch: ["aarch64", "amd64", "armhf", "armv7", "i386"]
+        
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4.1.1
+        
+      - name: Get information
+        id: info
+        uses: home-assistant/actions/helpers/info@master
+        with:
+          path: "./${{ matrix.addon }}"
+
+      # - name: Login to DockerHub Container Registry
+      #   uses: docker/login-action@v3.0.0
+      #   with:
+      #     registry: docker.io
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build ${{ matrix.addon }} add-on
+        uses: home-assistant/builder@2023.09.0
+        with:
+          args: |
+            --${{ matrix.arch }} \
+            --target /data/${{ matrix.addon }} \
+            --docker-hub "ghcr.io/${{ github.repository_owner }}" \
+            --addon

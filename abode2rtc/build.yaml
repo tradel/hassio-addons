@@ -1,0 +1,10 @@
+build_from:
+  aarch64: "docker.io/alexxit/go2rtc:latest"
+  amd64: "docker.io/alexxit/go2rtc:latest"
+  armv7: "docker.io/alexxit/go2rtc:latest"
+  i386: "docker.io/alexxit/go2rtc:latest"
+labels:
+  org.opencontainers.image.title: "Home Assistant Add-on: Abode Camera Streamer"
+  org.opencontainers.image.description: "Provides streaming video from Abode security cameras."
+  org.opencontainers.image.source: "https://github.com/tradel/hassio-addons"
+  org.opencontainers.image.licenses: "Apache License 2.0"
