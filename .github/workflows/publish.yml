@@ -48,6 +48,4 @@ jobs:
             --addon \
             --${{ matrix.arch }} \
             --target /data/${{ matrix.addon }} \
-            --docker-hub "ghcr.io/${{ github.repository_owner }}" \
-            --docker-user "${{ secrets.GHCR_USERNAME }}" \
-            --docker-password "${{ secrets.GHCR_TOKEN }}"
+            --docker-hub "ghcr.io/${{ github.repository_owner }}" 
