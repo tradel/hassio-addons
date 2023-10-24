@@ -4,7 +4,7 @@ from urllib.parse import urljoin
 
 import requests
 
-from logger import log
+from logger import log, DEBUG
 
 CONFIG_PATH = '/data/options.json'
 
@@ -16,8 +16,20 @@ class HassClient:
         self.token = None
         self.options = dict()
         self.http = requests.Session()
-        self._get_token()
         self._load_options()
+        self._validate_options()
+        self._set_debug()
+        self._get_token()
+
+    def _set_debug(self) -> None:
+        if self.options['debug']:
+            log.setLevel(DEBUG)
+
+    def _validate_options(self) -> None:
+        if not self.options['abode_username']:
+            raise Exception("Abode API username not set. Check configuration of the addon.")
+        if not self.options['abode_password']:
+            raise Exception("Abode API password not set. Check configuration of the addon.")
 
     def _get_token(self) -> None:
         self.token = os.getenv("SUPERVISOR_TOKEN")

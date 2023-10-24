@@ -6,7 +6,6 @@ import tempfile
 from urllib.parse import parse_qs, urljoin, urlparse
 from dataclasses import dataclass
 
-# import arrow
 import requests
 
 from logger import log, go2rtc_log, DEBUG
@@ -20,14 +19,6 @@ ERR_CAMERA_OFFLINE = 2604
 
 
 hass = HassClient()
-if not hass.options['abode_username']:
-    raise Exception("Abode API username not set. Check configuration of the addon.")
-if not hass.options['abode_password']:
-    raise Exception("Abode API password not set. Check configuration of the addon.")
-if hass.options['debug']:
-    log.setLevel(DEBUG)
-    go2rtc_log.setLevel(DEBUG)
-    
 has_abode = hass.has_abode_integration()
 log.info(f"Home Assistant {'does' if has_abode else 'does not'} have the Abode integration installed")
 abode_cameras = hass.get_abode_cams()
@@ -159,5 +150,8 @@ with requests.Session() as https:
 
     go2rtc_conf = write_go2rtc_config(cameras, features)
     go2rtc_path = go2rtc.find_or_download()
+
+    if hass.options['debug']:
+        go2rtc_log.setLevel(DEBUG)
     run_go2rtc(go2rtc_path, go2rtc_conf)
 
