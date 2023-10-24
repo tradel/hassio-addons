@@ -38,8 +38,8 @@ jobs:
         uses: docker/login-action@v3.0.0
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Build ${{ matrix.addon }} add-on
         uses: home-assistant/builder@2023.09.0
@@ -49,5 +49,5 @@ jobs:
             --${{ matrix.arch }} \
             --target /data/${{ matrix.addon }} \
             --docker-hub "ghcr.io/${{ github.repository_owner }}" \
-            --docker-user "${{ github.repository_owner }}" \
-            --docker-password "${{ secrets.GITHUB_TOKEN }}"
+            --docker-user "${{ secrets.GHCR_USERNAME }}" \
+            --docker-password "${{ secrets.GHCR_TOKEN }}"
