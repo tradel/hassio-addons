@@ -14,6 +14,7 @@ class HassClient:
         self.has_api = False
         self.url = None
         self.token = None
+        self.url = "http://supervisor"
         self.options = dict()
         self.http = requests.Session()
         self._load_options()
@@ -38,12 +39,13 @@ class HassClient:
         log.debug(f"Got HA supervisor token: {self.token}")
         if self.token:
             self.has_api = True
-            self.url = "http://supervisor"
             self.http.headers.update({
                 f"Authorization": f"Bearer {self.token}",
                 "Content-Type": "application/json; charset=utf-8",
                 "Accept": "application/json"
                 })
+        else:
+            log.warning("Unable to get HA supervisor token")
             
     def _obscure_passwords(self, data) -> dict:
         options = data.copy()
@@ -63,6 +65,8 @@ class HassClient:
             log.info(f"Could not read Home Assistant config from {CONFIG_PATH}")
 
     def _request(self, method: str, uri: str, data = None, raise_for_status: bool = True):
+        if not self.has_api:
+            raise Exception("Home Assistant API token unavailable")
         method = method.upper()
         log.info(f"Calling Home Assistant API: {method} {uri}")
         log.debug(f"Full URL: {urljoin(self.url, uri)}")

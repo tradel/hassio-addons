@@ -19,13 +19,16 @@ CAMERA_TYPE = 'device_type.mini_cam'
 ERR_CAMERA_OFFLINE = 2604
 
 
-have_hass = True
+have_hass = False
+has_abode = False
+hass_cameras = list()
 hass = HassClient()
 try:
     has_abode = hass.has_abode_integration()
     if has_abode:
         log.info(f"Home Assistant has the Abode integration installed")
         hass_cameras = hass.get_abode_cams()
+        have_hass = True
         log.info(f"Found {len(hass_cameras)} Abode cameras in Home Assistant")
     else:
         log.info(f"Home Assistant does not have the Abode integration installed")
