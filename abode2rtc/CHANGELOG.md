@@ -5,6 +5,7 @@
 - Added debug option and more debug logging around HA connection
 - Fixed crash if Home Assisant API is not available
 - If API is available, go2rtc slug for each camera will be copied from HA entity name
+- Obscure passwords and tokens in debug output
 
 # 1.1.0
 
