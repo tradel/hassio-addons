@@ -22,13 +22,15 @@ class HassClient:
         self._get_token()
 
     def _set_debug(self) -> None:
-        if self.options['debug']:
+        if 'debug' in self.options and self.options['debug'] == True:
             log.setLevel(DEBUG)
 
     def _validate_options(self) -> None:
-        if not self.options['abode_username']:
+        if not self.options:
+            return
+        if not ('abode_username' in self.options and self.options['abode_username']):
             raise Exception("Abode API username not set. Check configuration of the addon.")
-        if not self.options['abode_password']:
+        if not ('abode_password' in self.options and self.options['abode_password']):
             raise Exception("Abode API password not set. Check configuration of the addon.")
 
     def _get_token(self) -> None:
