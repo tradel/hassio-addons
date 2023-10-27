@@ -1,6 +1,6 @@
 #include <tunables/global>
 
-profile example flags=(attach_disconnected,mediate_deleted) {
+profile hassio_addon flags=(attach_disconnected,mediate_deleted) {
   #include <abstractions/base>
 
   # Capabilities
@@ -28,13 +28,18 @@ profile example flags=(attach_disconnected,mediate_deleted) {
   /data/** rw,
 
   # Start new profile for service
-  /app/spawn.py cx -> my_program,
+  /app/spawn.py cx -> abode2rtc,
 
-  profile my_program flags=(attach_disconnected,mediate_deleted,complain) {
+  profile abode2rtc flags=(attach_disconnected,mediate_deleted,complain) {
     #include <abstractions/base>
 
     # Receive signals from tini supervisor
     signal (receive) peer=*_abode2rtc,
+
+    # Allow access to network 
+    network packet,
+    network inet dgram,
+    network inet6 dgram,
 
     # Access to options.json and other files within your addon
     /data/** rw,
@@ -49,6 +54,7 @@ profile example flags=(attach_disconnected,mediate_deleted) {
     /usr/local/lib/python*/** rm,
     /usr/local/lib/libpython* rm,
     /usr/share/zoneinfo/** r,
+    /etc/ssl/** r,
 
     # Access required for service functionality
     # Note: List was built by doing the following:
@@ -58,6 +64,7 @@ profile example flags=(attach_disconnected,mediate_deleted) {
     # Remember to remove the `complain` flag when you are done
     /app/ r,
     /app/** rix,
+    /app/__pycache__/** wcdr,
     /bin/bash rix,
     /bin/busybox rix,
     /bin/echo ix,
