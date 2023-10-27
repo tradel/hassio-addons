@@ -8,7 +8,7 @@ _Provides streaming video from Abode security cameras._
 ![Supports armv7 Architecture][armv7-shield]
 ![Supports i386 Architecture][i386-shield]
 
-![Sample Lovelace dashboard with camera live view](https://github.com/tradel/hassio-addons/blob/main/assets/lovelace.png)
+![Sample Lovelace dashboard with camera live view](assets/lovelace.png)
 
 
 ## Introduction
@@ -71,7 +71,7 @@ Coming soon.
 Once the addon is installed, click the Configuration tab. The only required fields
 are your Abode username (usually an email address) and password. Don't forget to click Save.
 
-![Addon configuration screen](https://github.com/tradel/hassio-addons/blob/main/assets/config.png)
+![Addon configuration screen](assets/config.png)
 
 ## Adding the stream to a Lovelace dashboard
 
