@@ -35,6 +35,7 @@ and WebRTC Camera.
  1. If you haven't installed [HACS] yet, do that first. Don't forget to restart 
     Home Assistant after you install it.
  2. Add the [Abode component][abode-int]. After it's configured, you should see
+    entities for each of your cameras.
  4. Go into HACS and install the "WebRTC Camera" component. Restart Home Assistant.
  5. Go into **Settings** > **Devices & services** and add "WebRTC Camera".
     When prompted for the go2rtc URL, make sure it says http://localhost:1984/.
