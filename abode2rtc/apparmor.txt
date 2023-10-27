@@ -30,7 +30,7 @@ profile example flags=(attach_disconnected,mediate_deleted) {
   # Start new profile for service
   /app/spawn.py cx -> my_program,
 
-  profile my_program flags=(attach_disconnected,mediate_deleted) {
+  profile my_program flags=(attach_disconnected,mediate_deleted,complain) {
     #include <abstractions/base>
 
     # Receive signals from S6-Overlay
@@ -50,6 +50,7 @@ profile example flags=(attach_disconnected,mediate_deleted) {
     # Remember to remove the `complain` flag when you are done
     /app/** rix,
     /bin/bash rix,
+    /bin/busybox rix,
     /bin/echo ix,
     /etc/passwd r,
     /dev/tty rw,
