@@ -33,8 +33,8 @@ profile example flags=(attach_disconnected,mediate_deleted) {
   profile my_program flags=(attach_disconnected,mediate_deleted,complain) {
     #include <abstractions/base>
 
-    # Receive signals from S6-Overlay
-    signal (receive) peer=*_example,
+    # Receive signals from tini supervisor
+    signal (receive) peer=*_abode2rtc,
 
     # Access to options.json and other files within your addon
     /data/** rw,
@@ -45,6 +45,7 @@ profile example flags=(attach_disconnected,mediate_deleted) {
     # Access required for Python execution
     /lib/ld-musl* r,
     /usr/local/bin/python* rix,
+    /usr/local/lib/python*/ r,
     /usr/local/lib/python*/** r,
     /usr/local/lib/libpython* rm,
     /usr/share/zoneinfo/** r,
@@ -55,6 +56,7 @@ profile example flags=(attach_disconnected,mediate_deleted) {
     # 2. Add `complain` as a flag to this profile temporarily and run the addon
     # 3. Review the audit log with `journalctl _TRANSPORT="audit" -g 'apparmor="ALLOWED"'` and add other access as needed
     # Remember to remove the `complain` flag when you are done
+    /app/ r,
     /app/** rix,
     /bin/bash rix,
     /bin/busybox rix,
