@@ -18,7 +18,7 @@ Live View from Abode cameras. It is based on the excellent work by @AlexxIT and
 his [go2rtc] streamer. Many, many thanks to Alex for his hard work!
 
 Due to the fact that Abode cuts off the stream when idle, this is currently
-more of a proof of concept that anything else. See [below](#limit).
+more of a proof of concept than anything else. See [below](#limit).
 
 **NOTE:** Abode has not published official APIs for their cameras. This addon was
 written by observing the Abode web app and reverse-engineering the API calls. 
