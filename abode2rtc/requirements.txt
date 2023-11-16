@@ -1,3 +1,4 @@
 colorlog
 requests
 jinja2
+python_jsonpath

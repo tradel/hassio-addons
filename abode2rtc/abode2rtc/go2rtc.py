@@ -1,11 +1,11 @@
-import os 
-import sys 
+import os
+import sys
 import tempfile
 
 import requests
 import jsonpath
 
-from logger import log 
+from logger import log
 
 GO2RTC_REPO = 'AlexxIT/go2rtc'
 GO2RTC_BIN = 'go2rtc_linux_amd64'
@@ -33,7 +33,7 @@ def download_go2rtc() -> str:
         raise Exception(f"No {GO2RTC_BIN} binary found for {GO2RTC_REPO}")
     asset_url = assets[0]['url']
 
-    # Download the asset to a temporary location and make it executable:    
+    # Download the asset to a temporary location and make it executable:
     log.info(f"Downloading version {releases[0]['tag_name']} of {GO2RTC_BIN} from {asset_url}")
     response = requests.get(asset_url, stream=True, headers={"Accept": assets[0]["content_type"]})
     with tempfile.NamedTemporaryFile('wb', delete=False) as f:
@@ -64,4 +64,3 @@ def find_or_download() -> str:
         go2rtc_path = download_go2rtc()
     log.info(f"Found go2rtc in {go2rtc_path}")
     return go2rtc_path
-
