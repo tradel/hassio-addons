@@ -23,12 +23,10 @@ class HassClient:
         self._get_token()
 
     def _set_debug(self) -> None:
-        if 'debug' in self.options and self.options['debug'] == True:
+        if 'debug' in self.options and self.options['debug']:
             log.setLevel(DEBUG)
 
     def _validate_options(self) -> None:
-        if not self.options:
-            return
         if not ('abode_username' in self.options and self.options['abode_username']):
             raise Exception("Abode API username not set. Check configuration of the addon.")
         if not ('abode_password' in self.options and self.options['abode_password']):
@@ -40,13 +38,13 @@ class HassClient:
         if self.token:
             self.has_api = True
             self.http.headers.update({
-                f"Authorization": f"Bearer {self.token}",
+                "Authorization": f"Bearer {self.token}",
                 "Content-Type": "application/json; charset=utf-8",
                 "Accept": "application/json"
                 })
         else:
             log.warning("Unable to get HA supervisor token")
-            
+
     def _obscure_passwords(self, data) -> dict:
         options = data.copy()
         for key, val in options.items():
@@ -64,7 +62,7 @@ class HassClient:
         except IOError:
             log.info(f"Could not read Home Assistant config from {CONFIG_PATH}")
 
-    def _request(self, method: str, uri: str, data = None, raise_for_status: bool = True):
+    def _request(self, method: str, uri: str, data=None, raise_for_status=True):
         if not self.has_api:
             raise Exception("Home Assistant API token unavailable")
         method = method.upper()
@@ -90,16 +88,16 @@ class HassClient:
     def get_states(self):
         log.info("Getting current state of entities")
         return self._request('GET', '/core/api/states')
-    
+
     def get_abode_cams(self):
         def __is_abode_cam(state) -> bool:
             if not state['entity_id'].startswith('camera.'):
                 return False
-            elif not 'device_id' in state['attributes']:
+            elif 'device_id' not in state['attributes']:
                 return False
             elif not state['attributes']['device_id'].startswith('XF:'):
                 return False
-            elif not 'device_type' in state['attributes']:
+            elif 'device_type' not in state['attributes']:
                 return False
             elif not state['attributes']['device_type'].startswith('Abode Cam'):
                 return False
