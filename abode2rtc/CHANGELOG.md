@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2
+
+- Restore missing jsonpath library
+
 ## 1.2.1
 
 - Remove unneeded libraries and added jinja2
