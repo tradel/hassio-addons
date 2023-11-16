@@ -4,8 +4,8 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip3 install -r requirements.txt
 
-COPY abode2rtc/*.py ./
-RUN chmod a+x ./spawn.py
+COPY abode2rtc/*.py abode2rtc/*.j2 ./
+RUN chmod a+x ./spawn.py ./stream.py
 
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD [ "/app/spawn.py" ]

@@ -1,0 +1,21 @@
+api:
+    listen: ":{{ ports['go2rtc'] }}"
+
+rtsp:
+    listen: ":{{ ports['rtsp'] }}"
+
+webrtc:
+    listen: ":{{ ports['webrtc'] }}"
+    candidates:
+        - stun:8555
+
+hass:
+    config: '/config'
+
+log:
+    level: 'debug'
+
+streams:
+{%- for cam in cameras: %}
+    {{ cam['slug'] }}: echo:python3 {{ stream_path }} {{ abode_conf }} {{ cam['id'] }}
+{%- endfor %}

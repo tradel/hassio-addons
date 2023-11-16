@@ -2,7 +2,7 @@
 
 _Provides streaming video from Abode security cameras._
 
-![Supports aarch64 Architecture][aarch64-shield] 
+![Supports aarch64 Architecture][aarch64-shield]
 ![Supports amd64 Architecture][amd64-shield]
 ![Does not support armhf Architecture][armhf-shield]
 ![Supports armv7 Architecture][armv7-shield]
@@ -13,15 +13,19 @@ _Provides streaming video from Abode security cameras._
 
 ## Introduction
 
-This is an unofficial addon to [Home Assistant][hass] to support streaming the 
-Live View from Abode cameras. It is based on the excellent work by @AlexxIT and
+This is an unofficial addon to [Home Assistant][hass] to support streaming the
+Live View from [Abode] cameras. It is based on the excellent work by @AlexxIT and
 his [go2rtc] streamer. Many, many thanks to Alex for his hard work!
 
-Due to the fact that Abode cuts off the stream when idle, this is currently
-more of a proof of concept than anything else. See [below](#limit).
+~~Due to the fact that Abode cuts off the stream when idle, this is currently
+more of a proof of concept than anything else. See [below](#limit).~~
+
+As of version 1.2.0, the KVS streams should not time out anymore. Instead of
+generating all the URLs as soon as the addon starts, it uses the [echo] feature
+of go2rtc to generate the URL right before streaming starts.
 
 **NOTE:** Abode has not published official APIs for their cameras. This addon was
-written by observing the Abode web app and reverse-engineering the API calls. 
+written by observing the Abode web app and reverse-engineering the API calls.
 It may stop working if Abode changes their internal APIs.
 
 
@@ -32,13 +36,13 @@ and WebRTC Camera.
 
 ### Prerequisites
 
- 1. If you haven't installed [HACS] yet, do that first. Don't forget to restart 
+ 1. If you haven't installed [HACS] yet, do that first. Don't forget to restart
     Home Assistant after you install it.
  2. Add the [Abode component][abode-int]. After it's configured, you should see
     entities for each of your cameras.
- 4. Go into HACS and install the "WebRTC Camera" component. Restart Home Assistant.
- 5. Go into **Settings** > **Devices & services** and add "WebRTC Camera".
-    When prompted for the go2rtc URL, make sure it says http://localhost:1984/.
+ 3. Go into HACS and install the "WebRTC Camera" component. Restart Home Assistant.
+ 4. Go into **Settings** > **Devices & services** and add "WebRTC Camera".
+    When prompted for the go2rtc URL, make sure it says `http://localhost:1984/`.
 
 Now you're ready!
 
@@ -56,7 +60,7 @@ Or you can add the repository by following these steps:
  3. In the top right, click the 3-dots menu and select **Repositories**.
  4. Paste in the URL `https://github.com/tradel/hassio-addons` and click **Add**.
 
-Next, refresh your browser (F5 or Ctrl-R), then find the "Abode Camera Streaming" 
+Next, refresh your browser (F5 or Ctrl-R), then find the "Abode Camera Streaming"
 addon and install it.
 
 ### Installing with Docker
@@ -88,19 +92,19 @@ streams:
     url: kitchen_cam
 ```
 
-Replace `kitchen_cam` with the entity name of your camera. 
+Replace `kitchen_cam` with the entity name of your camera.
 
-The WebRTC Camera component has lots of other options. Consult [the documentation][webrtc] 
+The WebRTC Camera component has lots of other options. Consult [the documentation][webrtc]
 to see what's supported.
 
 ## How it works
 
 Unlike most home automation cameras, the Abode cams don't seem to support any kind of
-local streaming. Network probes don't show any open ports at all. 
+local streaming. Network probes don't show any open ports at all.
 
 Instead, the cameras send video to [Amazon Kinesis Video Streams][kvs], which handles
-features like motion detection and transcoding. When you start Live View, the 
-[Abode app][webapp] makes a POST to `/integrations/v1/camera/.../kvs/stream`, which 
+features like motion detection and transcoding. When you start Live View, the
+[Abode app][webapp] makes a POST to `/integrations/v1/camera/.../kvs/stream`, which
 sets up a KVS stream and returns the endpoint URL and other data to the app:
 
 ```json
@@ -135,11 +139,11 @@ sets up a KVS stream and returns the endpoint URL and other data to the app:
 }
 ```
 
-At first I tried to build some kind of Frankenstein KVS proxy, but it turns out that 
+At first I tried to build some kind of Frankenstein KVS proxy, but it turns out that
 [go2rtc] already knows how to handle KVS streams, so after tearing out what little
-hair I had left, the solution turned out to be surprisingly easy. I just get the 
+hair I had left, the solution turned out to be surprisingly easy. I just get the
 Abode camera IDs from Home Assistant, call the Abode API for each, use those URLs
-to create a `go2rtc.yaml` configuration file, and then launch `go2rtc`. 
+to create a `go2rtc.yaml` configuration file, and then launch `go2rtc`.
 
 The end result looks like this:
 
@@ -161,23 +165,26 @@ streams:
 
 ## Limitations
 
- - <a name="limit"></a>
-   Streams only work for a few minutes before the URL becomes invalid. This doesn't 
-   happen if the stream is actively playing. I suspect that Abode is shutting down
-   inactive KVS streams to save resources. I am working on potential solutions for this.
+- <a name="limit"></a>
+  ~~Streams only work for a few minutes before the URL becomes invalid. This doesn't
+  happen if the stream is actively playing. I suspect that Abode is shutting down
+  inactive KVS streams to save resources. I am working on potential solutions for this.~~
+  *(fixed in 1.2.0)*
 
- - If go2rtc or other streaming addons are installed, there may be port conflicts
-   and abode2rtc will fail to start. This will be fixed in a future release.
+- ~~If go2rtc or other streaming addons are installed, there may be port conflicts
+  and abode2rtc will fail to start. This will be fixed in a future release.~~
+  *(fixed in 1.2.0)*
 
- - The addon includes an AppArmor profile for security, but the profile still needs
-   some tweaking, so it's currently in "complain" mode. Once I have time to tweak it,
-   I'll turn on enforcing mode.
+- The addon includes an AppArmor profile for security, but the profile still needs
+  some tweaking, so it's currently in "complain" mode. Once I have time to tweak it,
+  I'll turn on enforcing mode.
 
 ## Frequently Asked Questions (FAQ)
 
 **I see the error "streams: websocket: bad handshake".**
 
-This is due to Abode shutting down the idle stream. See above under "Limitations".
+Try upgrading to version 1.2.0 or later of the addon. If you still see this, please
+[open a Github issue][bug] and include the complete log.
 
 **Why isn't the armhf platform supported?**
 
@@ -203,3 +210,4 @@ full log from the addon, if possible.
 [kvs]: https://aws.amazon.com/kinesis/video-streams/
 [webapp]: https://my.goabode.com/#/app/live-video
 [bug]: https://github.com/tradel/hassio-addons/issues/new/choose
+[echo]: https://github.com/AlexxIT/go2rtc/wiki/Source-Echo-examples

@@ -1,10 +1,9 @@
 from logging import Logger
-from colorlog import StreamHandler, ColoredFormatter, getLogger, DEBUG, INFO
+from colorlog import StreamHandler, ColoredFormatter, getLogger, INFO, DEBUG  # noqa: F401
 
 
 handler = StreamHandler()
-handler.setFormatter(ColoredFormatter(
-	'%(log_color)s%(asctime)s %(name)s [%(levelname)s] %(message)s'))
+handler.setFormatter(ColoredFormatter('%(log_color)s%(asctime)s %(name)s [%(levelname)s] %(message)s'))
 
 log: Logger = getLogger("abode2rtc")
 log.setLevel(INFO)

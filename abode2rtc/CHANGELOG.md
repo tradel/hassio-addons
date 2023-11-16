@@ -1,4 +1,8 @@
-<!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
+# 1.2.0
+
+- Major refactoring, grouped most functions into separate modules
+- Wait to get KVS endpoints until stream is actually requested
+- Request port assignments from HASS supervisor and pass into `go2rtc`
 
 # 1.1.1
 

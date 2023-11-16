@@ -1,43 +1,25 @@
-import os
-import json
 from urllib.parse import urljoin
 
 import requests
 
-from logger import log, DEBUG
+from logger import log
+from utils import obscure_passwords
+from const import DEFAULT_PORTS, DEFAULT_SUPERVISOR_URL
 
-CONFIG_PATH = '/data/options.json'
 
-
-class HassClient:
-    def __init__(self) -> None:
+class HassApiClient:
+    def __init__(self, token, supervisor_url=DEFAULT_SUPERVISOR_URL) -> None:
+        self.token = token
+        self.url = supervisor_url
         self.has_api = False
-        self.url = None
-        self.token = None
-        self.url = "http://supervisor"
-        self.options = dict()
-        self.http = requests.Session()
-        self._load_options()
-        self._validate_options()
-        self._set_debug()
+        self._http = requests.Session()
         self._get_token()
 
-    def _set_debug(self) -> None:
-        if 'debug' in self.options and self.options['debug']:
-            log.setLevel(DEBUG)
-
-    def _validate_options(self) -> None:
-        if not ('abode_username' in self.options and self.options['abode_username']):
-            raise Exception("Abode API username not set. Check configuration of the addon.")
-        if not ('abode_password' in self.options and self.options['abode_password']):
-            raise Exception("Abode API password not set. Check configuration of the addon.")
-
     def _get_token(self) -> None:
-        self.token = os.getenv("SUPERVISOR_TOKEN")
-        log.debug(f"Got HA supervisor token: {self.token}")
         if self.token:
+            log.debug(f"Got HA supervisor token: {self.token}")
             self.has_api = True
-            self.http.headers.update({
+            self._http.headers.update({
                 "Authorization": f"Bearer {self.token}",
                 "Content-Type": "application/json; charset=utf-8",
                 "Accept": "application/json"
@@ -45,51 +27,35 @@ class HassClient:
         else:
             log.warning("Unable to get HA supervisor token")
 
-    def _obscure_passwords(self, data) -> dict:
-        options = data.copy()
-        for key, val in options.items():
-            if 'password' in key:
-                options[key] = '**********'
-            elif key == 'Authorization':
-                options[key] = 'Bearer **********'
-        return options
-
-    def _load_options(self) -> None:
-        try:
-            with open(CONFIG_PATH, 'r') as f:
-                self.options: dict = json.load(f)
-            log.info(f"Configuration passed from Home Assistant: {self._obscure_passwords(self.options)}")
-        except IOError:
-            log.info(f"Could not read Home Assistant config from {CONFIG_PATH}")
-
     def _request(self, method: str, uri: str, data=None, raise_for_status=True):
         if not self.has_api:
-            raise Exception("Home Assistant API token unavailable")
+            return None
         method = method.upper()
         log.info(f"Calling Home Assistant API: {method} {uri}")
         log.debug(f"Full URL: {urljoin(self.url, uri)}")
-        log.debug(f"Headers:  {self._obscure_passwords(self.http.headers)}")
+        log.debug(f"Headers:  {obscure_passwords(self._http.headers)}")
         log.debug(f"Data:     {data}")
-        response = self.http.request(method, urljoin(self.url, uri), data=data)
+        response = self._http.request(method, urljoin(self.url, uri), data=data)
         if raise_for_status:
             response.raise_for_status()
         log.debug(f"Response from Home Assistant: {response.content}")
         return response.json()
 
-    def get_config(self):
+    def get_hass_config(self) -> dict:
         log.info("Checking Home Assistant configuration")
         return self._request('GET', '/core/api/config')
 
-    def has_abode_integration(self):
-        config = self.get_config()
-        log.debug(f"Installed components: {config['components']}")
-        return 'abode' in config['components']
+    def has_abode_integration(self) -> bool:
+        config = self.get_hass_config() or dict()
+        components = config.get('components', list())
+        log.debug(f"Installed components: {components}")
+        return 'abode' in components
 
-    def get_states(self):
+    def get_states(self) -> list:
         log.info("Getting current state of entities")
         return self._request('GET', '/core/api/states')
 
-    def get_abode_cams(self):
+    def get_abode_cams(self) -> list:
         def __is_abode_cam(state) -> bool:
             if not state['entity_id'].startswith('camera.'):
                 return False
@@ -104,3 +70,16 @@ class HassClient:
             return True
         states = self.get_states()
         return [s for s in states if __is_abode_cam(s)]
+
+    def get_addon_config(self) -> dict:
+        return self._request('GET', '/addons/self/info')
+
+    def get_addon_ports(self) -> dict:
+        my_info = self.get_addon_config()
+        port_info = my_info['data']['network']
+        return {
+            'go2rtc': port_info.get('1984/tcp', DEFAULT_PORTS['go2rtc']),
+            'rtsp': port_info.get('8554/tcp', DEFAULT_PORTS['rtsp']),
+            'webrtc': port_info.get('8555/tcp', DEFAULT_PORTS['webrtc']),
+            'api': port_info.get('80/tcp', DEFAULT_PORTS['api'])
+        }
