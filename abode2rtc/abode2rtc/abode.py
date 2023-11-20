@@ -2,7 +2,6 @@ import json
 import os
 import re
 import tempfile
-from datetime import datetime
 from threading import Timer
 from typing import Union
 from urllib.parse import urljoin
@@ -55,6 +54,7 @@ class AbodeApiClient:
         self._access_token = self._get_access_token()
         self._set_auth_headers()
         self._start_refresh_timer()
+        self.save()
 
     def _start_refresh_timer(self) -> None:
         if self._token_timer:

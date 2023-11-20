@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.4
+
+- Update tempfile after refreshing access token
+
 ## 1.2.3
 
 - Refresh the access token every 50 minutes (TTL is one hour)
