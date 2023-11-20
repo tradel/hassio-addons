@@ -2,15 +2,15 @@ import json
 import os
 import re
 import tempfile
-
-from urllib.parse import urljoin
+from datetime import datetime
+from threading import Timer
 from typing import Union
+from urllib.parse import urljoin
 
+import const
 import requests
-
 from logger import log
 from utils import generate_uuid
-import const
 
 
 class AbodeApiClient:
@@ -22,6 +22,7 @@ class AbodeApiClient:
         self._features = None
         self._devices = None
         self._cameras = None
+        self._token_timer = None
         if self._username and self._password:
             self.login()
 
@@ -46,7 +47,20 @@ class AbodeApiClient:
 
     def _get_access_token(self) -> str:
         claims = self._request('GET', '/api/auth2/claims')
+        self._start_refresh_timer()
         return claims['access_token']
+
+    def _refresh_access_token(self) -> None:
+        log.info("Refreshing Abode access token")
+        self._access_token = self._get_access_token()
+        self._set_auth_headers()
+        self._start_refresh_timer()
+
+    def _start_refresh_timer(self) -> None:
+        if self._token_timer:
+            self._token_timer.cancel()
+        self._token_timer = Timer(const.TOKEN_REFRESH_INTERVAL, self._refresh_access_token)
+        self._token_timer.start()
 
     def login(self) -> None:
         self._api_key = self._get_api_key()

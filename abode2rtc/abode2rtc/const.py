@@ -12,3 +12,5 @@ DEFAULT_PORTS = {
     'rtsp': 8554,
     'webrtc': 8555
 }
+
+TOKEN_REFRESH_INTERVAL = 3000  # every 50 minutes
