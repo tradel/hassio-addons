@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.5
+
+- Re-login before fetching KVS details instead of refreshing access token
+- Added AppArmor configuration for `stream.py`
+
 ## 1.2.4
 
 - Update tempfile after refreshing access token
