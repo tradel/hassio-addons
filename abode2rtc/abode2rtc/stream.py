@@ -9,11 +9,10 @@ from kvs import parse_kvs_response
 abode_conf = sys.argv[1]
 cam_id = sys.argv[2]
 
-abode = AbodeApiClient.load(abode_conf)
-abode.login()
-
-kvs_data = abode.get_kvs_stream(cam_id)
-kvs = parse_kvs_response(kvs_data, cam_id)
+with AbodeApiClient.load(abode_conf) as abode:
+    abode.login()
+    kvs_data = abode.get_kvs_stream(cam_id)
+    kvs = parse_kvs_response(kvs_data, cam_id)
 
 print(f"webrtc:{kvs.endpoint_url}"
       "#format=kinesis"

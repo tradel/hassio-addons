@@ -1,5 +1,5 @@
 name: Abode Camera Streaming
-version: 1.2.5
+version: 1.2.6
 slug: abode2rtc
 description: Provides streaming video from Abode security cameras
 url: https://github.com/tradel/hassio-addons/tree/main/abode2rtc

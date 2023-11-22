@@ -13,10 +13,12 @@ from utils import generate_uuid
 
 
 class AbodeApiClient:
-    def __init__(self, username: str = None, password: str = None, locale: str = const.DEFAULT_LOCALE) -> None:
+    def __init__(self, username: str = None, password: str = None, locale: str = const.DEFAULT_LOCALE,
+                 refresh_token_in_background: bool = False) -> None:
         self._username = username
         self._password = password
         self._locale = locale
+        self._do_refresh = refresh_token_in_background
         self._session = requests.Session()
         self._features = None
         self._devices = None
@@ -57,10 +59,23 @@ class AbodeApiClient:
         self.save()
 
     def _start_refresh_timer(self) -> None:
+        if not self._do_refresh:
+            return
         if self._token_timer:
             self._token_timer.cancel()
         self._token_timer = Timer(const.TOKEN_REFRESH_INTERVAL, self._refresh_access_token)
         self._token_timer.start()
+
+    def _cancel_refresh_timer(self) -> None:
+        if self._token_timer:
+            self._token_timer.cancel()
+            self._token_timer = None
+
+    def __enter__(self) -> 'AbodeApiClient':
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        self._cancel_refresh_timer()
 
     def login(self) -> None:
         self._api_key = self._get_api_key()

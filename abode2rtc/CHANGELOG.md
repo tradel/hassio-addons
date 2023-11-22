@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.6
+
+- Turn AbodeApiClient into a context manager so we can clean up refresh thread
+
 ## 1.2.5
 
 - Re-login before fetching KVS details instead of refreshing access token

@@ -55,7 +55,7 @@ def run_go2rtc(bin_path, config_path):
     log.info("Starting go2rtc...")
     p = subprocess.Popen([bin_path, '-config', config_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     while not p.poll():
-        log.info("Polling!")
+        log.debug("Polling for new output from go2rtc")
         for line in p.stdout:
             _, severity, message = line.decode('utf-8').strip().split(' ', maxsplit=2)
             if severity == 'ERR':
