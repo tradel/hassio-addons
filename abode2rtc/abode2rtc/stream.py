@@ -10,6 +10,8 @@ abode_conf = sys.argv[1]
 cam_id = sys.argv[2]
 
 abode = AbodeApiClient.load(abode_conf)
+abode.login()
+
 kvs_data = abode.get_kvs_stream(cam_id)
 kvs = parse_kvs_response(kvs_data, cam_id)
 
