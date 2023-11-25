@@ -5,11 +5,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
     python3-setuptools \
     python3-wheel \
+    python3-requests \
+    python3-jinja2 \
+    python3-jsonpath-rw \
+    python3-colorlog \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY requirements.txt ./
-RUN pip3 install -r requirements.txt
+# COPY requirements.txt ./
+# RUN pip3 install -r requirements.txt
 
 COPY abode2rtc/*.py abode2rtc/*.j2 ./
 RUN chmod a+x ./spawn.py ./stream.py
