@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 COPY requirements.txt ./
-RUN pip3 install -r --break-system-packages requirements.txt
+RUN pip3 install --break-system-packages -r requirements.txt
 # RUN pip3 install jsonpath
 
 COPY abode2rtc/*.py abode2rtc/*.j2 ./
