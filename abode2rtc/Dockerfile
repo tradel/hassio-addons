@@ -18,7 +18,7 @@ WORKDIR /app
 COPY abode2rtc/*.py abode2rtc/*.j2 ./
 RUN chmod a+x ./spawn.py ./stream.py
 
-ENTRYPOINT ["/sbin/tini", "--"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD [ "/app/spawn.py" ]
 
 EXPOSE 1984/tcp
