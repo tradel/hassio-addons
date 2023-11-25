@@ -1,4 +1,4 @@
-FROM alexxit/go2rtc
+FROM alexxit/go2rtc:master-hardware
 
 WORKDIR /app
 COPY requirements.txt ./

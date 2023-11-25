@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.7
+
+- Switch to `master-hardware` build of `go2rtc` for VAAPI support
+
 ## 1.2.6
 
 - Turn AbodeApiClient into a context manager so we can clean up refresh thread
