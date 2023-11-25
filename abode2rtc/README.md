@@ -186,11 +186,9 @@ streams:
 Try upgrading to version 1.2.0 or later of the addon. If you still see this, please
 [open a Github issue][bug] and include the complete log.
 
-**Why is amd64 the only supported platform?**
+**Why isn't the armhf platform supported?**
 
-Starting with version 1.2.6, this addon is being built with support for hardware
-encoding via VAAPI. If you need this built for another platform, please
-[create a Github issue][bug] and I'll do my best to add it.
+This addon relies on [go2rtc], which doesn't support armhf.
 
 **I have another problem.**
 
@@ -198,11 +196,11 @@ Feel free to [create a Github issue][bug] and I'll take a look. Please include t
 full log from the addon, if possible.
 
 
-[aarch64-shield]: https://img.shields.io/badge/aarch64-no-red.svg
+[aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
 [armhf-shield]: https://img.shields.io/badge/armhf-no-red.svg
-[armv7-shield]: https://img.shields.io/badge/armv7-no-red.svg
-[i386-shield]: https://img.shields.io/badge/i386-no-red.svg
+[armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
+[i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
 [abode]: https://goabode.com/
 [hass]: https://www.home-assistant.io/
 [hacs]: https://hacs.xyz/

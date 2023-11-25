@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.8
+
+- Revert to standard build of `go2rtc` (hardware support isn't actually needed)
+
 ## 1.2.7
 
 - Switch to `master-hardware` build of `go2rtc` for VAAPI support
