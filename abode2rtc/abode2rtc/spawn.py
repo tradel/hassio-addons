@@ -60,6 +60,10 @@ def run_go2rtc(bin_path, config_path):
             _, severity, message = line.decode('utf-8').strip().split(' ', maxsplit=2)
             if severity == 'ERR':
                 go2rtc_log.error(message)
+            elif severity == 'WRN':
+                go2rtc_log.warning(message)
+            elif severity == 'DBG':
+                go2rtc_log.debug(message)
             else:
                 go2rtc_log.info(message)
 

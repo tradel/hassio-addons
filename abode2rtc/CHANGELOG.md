@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.9
+
+- Improved debug logging from `go2rtc`
+
 ## 1.2.8
 
 - Revert to standard build of `go2rtc` (hardware support isn't actually needed)

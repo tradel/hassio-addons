@@ -13,7 +13,9 @@ hass:
     config: '/config'
 
 log:
-    level: 'debug'
+    level: info
+    streams: trace
+    webrtc: trace
 
 streams:
 {%- for cam in cameras: %}
