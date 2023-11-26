@@ -55,18 +55,26 @@ def run_go2rtc(bin_path, config_path):
     log.info("Starting go2rtc...")
     p = subprocess.Popen([bin_path, '-config', config_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     while not p.poll():
-        log.debug("Polling for new output from go2rtc")
+        buf = ""
         for line in p.stdout:
-            _, severity, message = line.decode('utf-8').strip().split(' ', maxsplit=2)
-            if severity == 'ERR':
-                go2rtc_log.error(message)
-            elif severity == 'WRN':
-                go2rtc_log.warning(message)
-            elif severity == 'DBG':
-                go2rtc_log.debug(message)
-            else:
-                go2rtc_log.info(message)
-
+            line: str = line.decode('utf-8').strip()
+            if line[0].isdigit():
+                try:
+                    _, severity, message = buf.split(' ', maxsplit=2)
+                    if severity == 'ERR':
+                        go2rtc_log.error(message)
+                    elif severity == 'WRN':
+                        go2rtc_log.warning(message)
+                    elif severity == 'INF':
+                        go2rtc_log.info(message)
+                    elif severity == 'DBG' or severity == 'TRC':
+                        go2rtc_log.debug(message)
+                    else:
+                        go2rtc_log.info(buf)
+                except ValueError:
+                    go2rtc_log.info(buf)
+                buf = ""
+            buf += line
     if p.returncode:
         log.warning(f"Exit code from go2rtc is {p.returncode}")
     else:
