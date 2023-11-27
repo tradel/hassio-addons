@@ -58,6 +58,8 @@ def run_go2rtc(bin_path, config_path):
         buf = ""
         for line in p.stdout:
             line: str = line.decode('utf-8').strip()
+            if not line:
+                continue
             if line[0].isdigit():
                 try:
                     _, severity, message = buf.split(' ', maxsplit=2)
