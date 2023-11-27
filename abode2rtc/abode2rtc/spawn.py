@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import os
+import re
 import subprocess
 import tempfile
 
@@ -54,13 +55,15 @@ def write_go2rtc_config(cameras) -> str:
 def run_go2rtc(bin_path, config_path):
     log.info("Starting go2rtc...")
     p = subprocess.Popen([bin_path, '-config', config_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
     while not p.poll():
         buf = ""
         for line in p.stdout:
             line: str = line.decode('utf-8').strip()
             if not line:
                 continue
-            if line[0].isdigit():
+            line = ansi_escape.sub('', line)
+            if line[0].isdigit() and buf:
                 try:
                     _, severity, message = buf.split(' ', maxsplit=2)
                     if severity == 'ERR':

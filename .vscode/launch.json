@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/abode2rtc/abode2rtc/spawn.py",
-            "args": ["-c", "./options.json", "--supervisor-url", "http://hassio"],
+            "args": ["--debug", "-c", "./options.json", "--supervisor-url", "http://beebox"],
             "env": {
                 "SUPERVISOR_TOKEN": "3bcc41411b11c5692813090068cdcc9311c3a18e2b826d7dbf9f8959d26559e47e38f99818c9ece7109f1c9229f0d433aec810663153fffc"
             },
