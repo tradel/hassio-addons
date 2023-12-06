@@ -36,7 +36,7 @@ class ConfigParser:
                             help='Path to configuration file (normally supplied by Home Assistant) ' +
                             '(default: %(default)s)')
         parser.add_argument('--supervisor-token', '-t', action=EnvDefault,
-                            envvar='SUPERVISOR_TOKEN',
+                            envvar='SUPERVISOR_TOKEN', required=False,
                             help='Home Assistant Supervisor token')
         parser.add_argument('--supervisor-url', '-s', action=EnvDefault,
                             envvar='SUPERVISOR_URL',
