@@ -10,8 +10,12 @@ abode_conf = sys.argv[1]
 cam_id = sys.argv[2]
 
 with AbodeApiClient.load(abode_conf) as abode:
-    abode.login()
-    kvs_data = abode.get_kvs_stream(cam_id)
+    try:
+        kvs_data = abode.get_kvs_stream(cam_id)
+    except Exception:
+        abode.login()
+        abode.save(abode_conf)
+        kvs_data = abode.get_kvs_stream(cam_id)
     kvs = parse_kvs_response(kvs_data, cam_id)
 
 print(f"webrtc:{kvs.endpoint_url}"

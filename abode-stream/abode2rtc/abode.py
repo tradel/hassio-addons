@@ -97,8 +97,12 @@ class AbodeApiClient:
     def _get_cameras(self) -> list:
         if not self._cameras:
             self._get_devices()
-            self._cameras = [d for d in self._devices if d['type_tag'] == const.CAMERA_TYPE and
-                             d['origin'] == 'abode_cam']
+            log.debug("All devices found in Abode API:")
+            for d in self._devices:
+                log.debug(f"  name={d.get('name')!r}  type_tag={d.get('type_tag')!r}  origin={d.get('origin')!r}  id={d.get('id')!r}")
+            self._cameras = [d for d in self._devices if
+                             (d['type_tag'] == const.CAMERA_TYPE and d['origin'] == 'abode_cam') or
+                             (d['type_tag'] == const.IOTA_CAMERA_TYPE and d['origin'] == 'abode')]
             if len(self._cameras) == 0:
                 log.warning("No cameras found in your Abode setup")
         return self._cameras
@@ -166,7 +170,7 @@ class AbodeApiClient:
         self._features = data['features']
         self._devices = data['devices']
         self._cameras = data['cameras']
-        self._set_auth_headers
+        self._set_auth_headers()
         return self
 
     @staticmethod

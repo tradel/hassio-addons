@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.1
+
+- Fix streams failing after session tokens expire — now re-authenticates automatically on failure
+
+## 1.3.0
+
+- Fix repeated login on every stream request that caused Abode email notifications
+- Fix session headers not being set correctly when loading saved credentials
+
 ## 1.2.9
 
 - Improved debug logging from `go2rtc`

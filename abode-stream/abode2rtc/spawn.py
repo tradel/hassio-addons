@@ -26,10 +26,10 @@ def _cam_slug(cam_name: str, cam_id: str) -> str:
                 entity_id = cam['entity_id'].replace('camera.', '')
                 log.debug(f"Found camera in Home Assistant, go2rtc slug will be {entity_id}")
                 return entity_id
-    else:
-        slug = cam_name.lower().replace(' ', '_')
-        log.debug(f"Home Assistant API not available, go2rtc slug will default to {slug}")
-        return slug
+        log.warning(f"Camera {cam_id} ({cam_name!r}) not found in Home Assistant, falling back to name-based slug")
+    slug = cam_name.lower().replace(' ', '_')
+    log.debug(f"go2rtc slug will be {slug}")
+    return slug
 
 
 def add_slugs(cameras) -> None:
