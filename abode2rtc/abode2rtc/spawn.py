@@ -92,7 +92,10 @@ if config.debug:
     go2rtc_log.setLevel(DEBUG)
 
 
-abode = AbodeApiClient(username=config.abode_username, password=config.abode_password, locale=config.locale)
+# Keep one Abode session alive (token refresh every 50 min) instead of a fresh
+# login per stream; each login sends the account owner a sign-in email.
+abode = AbodeApiClient(username=config.abode_username, password=config.abode_password, locale=config.locale,
+                       refresh_token_in_background=True)
 abode_conf = abode.save()
 
 have_hass = False

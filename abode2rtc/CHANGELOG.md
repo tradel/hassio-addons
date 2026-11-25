@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Reuse one Abode session instead of logging in on every stream start, which sent
+  a "new sign-in" email per stream and could get the account rate-limited (#16)
+- Keep the saved session's access token refreshed in the background
+- Use a persistent device UUID for logins
+- Log Abode's reason when a login is refused instead of `KeyError: 'token'`
+
 ## 1.2.9
 
 - Improved debug logging from `go2rtc`
