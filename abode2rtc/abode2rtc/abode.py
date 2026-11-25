@@ -38,12 +38,21 @@ class AbodeApiClient:
                                       'Authorization': f"Bearer {self._access_token}"})
 
     def _get_api_key(self) -> str:
-        login = self._request('POST', '/api/auth2/login', data={
+        response = self._session.request('POST', urljoin(const.BASE_URL, '/api/auth2/login'), data={
             'id': self._username,
             'password': self._password,
             'locale_code': self._locale,
             'uuid': generate_uuid()
         })
+        try:
+            login = response.json()
+        except ValueError:
+            login = {}
+        if 'token' not in login:
+            # Log Abode's reason (never the token or password) so a refused login is diagnosable.
+            reason = {k: v for k, v in login.items() if k not in ('token', 'password')} if isinstance(login, dict) else login
+            log.error(f"Abode login refused: HTTP {response.status_code} {reason or response.text[:300]}")
+            raise RuntimeError("Abode login refused")
         return login['token']
 
     def _get_access_token(self) -> str:
